@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API_BASE_URL from "../config";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
@@ -23,7 +24,7 @@ function Login() {
 
     try {
       const res = await fetch(
-        `http://localhost:3000/api/users/${userId}`
+        `${API_BASE_URL}/api/users/${userId}`
       );
 
       if (res.ok) {
