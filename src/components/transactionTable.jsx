@@ -5,6 +5,7 @@ import "./TransactionTable.css";
 function TransactionTable({
   transactions,
   setTransactions,
+  fetchTransactions,
 }) {
   const [rows, setRows] = useState([]);
 
@@ -53,14 +54,15 @@ function TransactionTable({
           }),
         }
       );
-
+  
       const data =
         await response.json();
-
+  
       if (!data.success) {
         throw new Error(data.message);
       }
-      
+  
+      await fetchTransactions();
     } catch (error) {
       console.error(error);
       alert(
@@ -79,29 +81,15 @@ function TransactionTable({
           method: "DELETE",
         }
       );
-
+  
       const data =
         await response.json();
-
+  
       if (!data.success) {
         throw new Error(data.message);
       }
-
-      setRows((prev) =>
-        prev.filter(
-          (transaction) =>
-            transaction._id !==
-            transactionId
-        )
-      );
-
-      setTransactions((prev) =>
-        prev.filter(
-          (transaction) =>
-            transaction._id !==
-            transactionId
-        )
-      );
+  
+      await fetchTransactions();
     } catch (error) {
       console.error(error);
       alert(

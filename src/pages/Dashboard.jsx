@@ -169,9 +169,8 @@ function Dashboard() {
           <div className="table-wrapper">
             <TransactionTable
               transactions={transactions}
-              setTransactions={
-                setTransactions
-              }
+              setTransactions={setTransactions}
+              fetchTransactions={fetchTransactions}
             />
           </div>
         )}
