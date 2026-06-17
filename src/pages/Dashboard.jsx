@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-
+import API_BASE_URL from "../config";
 import "./Dashboard.css";
 
 import TransactionTable from "../components/transactionTable";
@@ -31,7 +31,7 @@ function Dashboard() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/user/delete/${user._id}`,
+        `${API_BASE_URL}/user/delete/${user._id}`,
         {
           method: "DELETE",
         }
@@ -58,7 +58,7 @@ function Dashboard() {
   const fetchTransactions = async () => {
     try {
       const res = await fetch(
-        `http://localhost:3000/transaction/get/${user._id}`
+        `${API_BASE_URL}/transaction/get/${user._id}`
       );
 
       const data = await res.json();

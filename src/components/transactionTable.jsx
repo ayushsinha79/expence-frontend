@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FiCopy } from "react-icons/fi";
+import API_BASE_URL from "../config";
 import "./TransactionTable.css";
 
 function TransactionTable({
@@ -33,7 +34,7 @@ function TransactionTable({
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/transaction/update/${transaction._id}`,
+        `${API_BASE_URL}/transaction/update/${transaction._id}`,
         {
           method: "PUT",
           headers: {
@@ -76,7 +77,7 @@ function TransactionTable({
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/transaction/delete/${transactionId}`,
+        `${API_BASE_URL}/transaction/delete/${transactionId}`,
         {
           method: "DELETE",
         }

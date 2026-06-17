@@ -46,7 +46,7 @@ function Login() {
   const handleSubmit = async () => {
     try {
       const res = await fetch(
-        "http://localhost:3000/api/login",
+        `${API_BASE_URL}/api/login`,
         {
           method: "POST",
           headers: {

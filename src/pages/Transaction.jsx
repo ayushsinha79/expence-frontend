@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TransactionForm from "../components/transactionForm";
+import API_BASE_URL from "../config";
 import "./Transaction.css";
 
 function Transaction() {
@@ -30,7 +31,7 @@ function Transaction() {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/transaction/create",
+        `${API_BASE_URL}/transaction/create`,
         {
           method: "POST",
           headers: {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../config";
 import "./Register.css";
 
 function Register() {
@@ -14,7 +15,7 @@ function Register() {
   const handleRegister = async () => {
     try {
       const res = await fetch(
-        "http://localhost:3000/user/create",
+        `${API_BASE_URL}/user/create`,
         {
           method: "POST",
           headers: {
