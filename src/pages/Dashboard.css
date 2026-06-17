@@ -168,3 +168,17 @@
       width: 100%;
     }
   }
+
+  .delete-account-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  .delete-account-btn:hover {
+    background: #b91c1c;
+  }

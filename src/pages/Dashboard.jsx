@@ -21,6 +21,40 @@ function Dashboard() {
     }
   }, []);
 
+
+  const handleDeleteUser = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? This will permanently delete all your transactions."
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/user/delete/${user._id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      localStorage.removeItem("userId");
+      localStorage.removeItem("currentUser");
+
+      alert("Account deleted successfully");
+
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete account");
+    }
+  };
+
   const fetchTransactions = async () => {
     try {
       const res = await fetch(
@@ -110,6 +144,12 @@ function Dashboard() {
             onClick={handleLogout}
           >
             Logout
+          </button>
+          <button
+            className="delete-account-btn"
+            onClick={handleDeleteUser}
+          >
+            Delete Account
           </button>
         </div>
 

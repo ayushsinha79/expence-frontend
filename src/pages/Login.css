@@ -112,3 +112,39 @@
     font-size: 1.8rem;
     font-weight: bold;
   }
+
+  .create-account-button {
+    width: 100%;
+    padding: 14px;
+  
+    margin-top: 12px;
+  
+    border-radius: 12px;
+  
+    border: 2px solid #667eea;
+  
+    background: white;
+  
+    color: #667eea;
+  
+    font-size: 1rem;
+    font-weight: 600;
+  
+    cursor: pointer;
+  
+    transition: all 0.3s ease;
+  }
+  
+  .create-account-button:hover {
+    background: #667eea;
+    color: white;
+  
+    transform: translateY(-2px);
+  
+    box-shadow: 0 10px 20px
+      rgba(102, 126, 234, 0.25);
+  }
+  
+  .create-account-button:active {
+    transform: translateY(0);
+  }

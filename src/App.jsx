@@ -6,7 +6,9 @@ import {
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Transaction from "./pages/Transaction"
+import Transaction from "./pages/Transaction";
+import Register from "./pages/Register";
+import ProtectedRoute from "./pages/ProtectedRoutes";
 
 function App() {
   return (
@@ -23,7 +25,14 @@ function App() {
         />
         <Route
           path="/transaction"
-          element={<Transaction />}
+          element={<ProtectedRoute>
+            <Transaction />
+          </ProtectedRoute>}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
         />
       </Routes>
     </BrowserRouter>

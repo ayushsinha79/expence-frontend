@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [response, setResponse] = useState(null);
+  const [username, setUsername] =
+    useState("");
+
+  const [response, setResponse] =
+    useState(null);
 
   const navigate = useNavigate();
 
@@ -13,7 +16,8 @@ function Login() {
   }, []);
 
   const checkAuth = async () => {
-    const userId = localStorage.getItem("userId");
+    const userId =
+      localStorage.getItem("userId");
 
     if (!userId) return;
 
@@ -23,7 +27,8 @@ function Login() {
       );
 
       if (res.ok) {
-        const user = await res.json();
+        const user =
+          await res.json();
 
         localStorage.setItem(
           "currentUser",
@@ -31,9 +36,6 @@ function Login() {
         );
 
         navigate("/dashboard");
-      } else {
-        localStorage.removeItem("userId");
-        localStorage.removeItem("currentUser");
       }
     } catch (error) {
       console.error(error);
@@ -47,7 +49,8 @@ function Login() {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type":
+              "application/json",
           },
           body: JSON.stringify({
             username,
@@ -73,10 +76,9 @@ function Login() {
         setResponse(data);
       }
     } catch (error) {
-      console.error(error);
-
       setResponse({
-        message: "Something went wrong",
+        message:
+          "Something went wrong",
       });
     }
   };
@@ -85,32 +87,43 @@ function Login() {
     <div className="login-container">
       <div className="login-card">
         <div className="logo">₹</div>
-  
+
         <h1 className="login-title">
           Expense Tracker
         </h1>
-  
+
         <p className="login-subtitle">
-          Login to manage your expenses
+          Login to continue
         </p>
-  
+
         <input
           className="login-input"
           type="text"
-          placeholder="Enter username"
+          placeholder="Username"
           value={username}
           onChange={(e) =>
-            setUsername(e.target.value)
+            setUsername(
+              e.target.value
+            )
           }
         />
-  
+
         <button
           className="login-button"
           onClick={handleSubmit}
         >
           Login
         </button>
-  
+
+        <button
+          className="create-account-button"
+          onClick={() =>
+            navigate("/register")
+          }
+        >
+          Create Account
+        </button>
+
         {response && (
           <div className="login-message">
             {response.message}
