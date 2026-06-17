@@ -1,4 +1,4 @@
-import "./TransactionForm.css";
+import "./transactionForm.css";
 
 function TransactionForm({
   title,

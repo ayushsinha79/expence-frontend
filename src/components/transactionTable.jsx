@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FiCopy } from "react-icons/fi";
 import API_BASE_URL from "../config";
-import "./TransactionTable.css";
+import "./transactionTable.css";
 
 function TransactionTable({
   transactions,
