@@ -419,3 +419,13 @@
     flex: 1;
   }
 }
+@media (max-width: 1024px) {
+  .date-range-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .date-range-row .date-input-wrapper {
+    flex: 1;
+  }
+}
