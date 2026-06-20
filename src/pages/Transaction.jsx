@@ -10,6 +10,9 @@ function Transaction() {
   const currentUser = JSON.parse(
     localStorage.getItem("currentUser")
   );
+  const [date, setDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
 
   const [title, setTitle] = useState("");
   const [description, setDescription] =
@@ -89,6 +92,7 @@ function Transaction() {
             createdBy:
               currentUser._id,
             belongsTo,
+            date
           }),
         }
       );
@@ -164,6 +168,8 @@ function Transaction() {
           setSource={setSource}
           setBelongsTo={setBelongsTo}
           onSubmit={handleSubmit}
+          date={date}
+          setDate={setDate}
         />
       </div>
     </div>

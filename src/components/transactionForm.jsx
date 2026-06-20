@@ -5,6 +5,7 @@ import {
   FiDollarSign,
   FiCreditCard,
   FiUser,
+  FiCalendar
 } from "react-icons/fi";
 
 function TransactionForm({
@@ -20,6 +21,8 @@ function TransactionForm({
   setSource,
   setBelongsTo,
   onSubmit,
+  date,
+  setDate,
 }) {
   const paymentSources = [
     "AXIS Flipkart",
@@ -125,6 +128,23 @@ function TransactionForm({
             Choose the card or payment method
           </small>
         </div>
+      </div>
+
+      <div className="form-group">
+        <label className="label-with-icon">
+          <FiCalendar />
+          <span>Transaction Date</span>
+        </label>
+
+        <input
+          className="form-input"
+          type="date"
+          value={date}
+          onChange={(e) =>
+            setDate(e.target.value)
+          }
+          required
+        />
       </div>
 
       <div className="form-group">

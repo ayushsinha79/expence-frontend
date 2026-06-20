@@ -143,7 +143,22 @@ function TransactionTable({
             className="transaction-card-mobile"
           >
             <div className="mobile-header">
-              <h3>{transaction.title}</h3>
+              <div>
+                <h3>{transaction.title}</h3>
+
+                <small className="transaction-date">
+                  {new Date(
+                    transaction.date
+                  ).toLocaleDateString(
+                    "en-IN",
+                    {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    }
+                  )}
+                </small>
+              </div>
 
               <button
                 className="info-btn"
@@ -228,6 +243,7 @@ function TransactionTable({
               <th>Source</th>
               <th>Amount</th>
               <th>Cashback</th>
+              <th>Date</th>
               <th>Created By</th>
               <th>Actions</th>
             </tr>
@@ -319,6 +335,21 @@ function TransactionTable({
                         )
                       }
                     />
+                  </td>
+
+                  <td>
+                    <span className="date-badge">
+                      {new Date(
+                        transaction.date
+                      ).toLocaleDateString(
+                        "en-IN",
+                        {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        }
+                      )}
+                    </span>
                   </td>
 
                   <td>
