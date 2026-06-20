@@ -10,6 +10,9 @@ function Login() {
   const [response, setResponse] =
     useState(null);
 
+  const [loading, setLoading] =
+    useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,6 +47,17 @@ function Login() {
   };
 
   const handleSubmit = async () => {
+    if (!username.trim()) {
+      setResponse({
+        message:
+          "Please enter username",
+      });
+      return;
+    }
+
+    setLoading(true);
+    setResponse(null);
+
     try {
       const res = await fetch(
         `${API_BASE_URL}/api/login`,
@@ -81,39 +95,60 @@ function Login() {
         message:
           "Something went wrong",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-container">
+      <div className="background-blur blur-1" />
+      <div className="background-blur blur-2" />
+
       <div className="login-card">
-        <div className="logo">₹</div>
+        <div className="logo">
+          ₹
+        </div>
 
         <h1 className="login-title">
           Expense Tracker
         </h1>
 
         <p className="login-subtitle">
-          Login to continue
+          Track expenses and cashback
+          effortlessly
         </p>
+        {loading && (
+          <div className="loading-message">
+            Waking up server... please wait 5–10 seconds.
+          </div>
+        )}
 
         <input
           className="login-input"
           type="text"
-          placeholder="Username"
+          placeholder="Enter username"
           value={username}
           onChange={(e) =>
             setUsername(
               e.target.value
             )
           }
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSubmit();
+            }
+          }}
         />
 
         <button
           className="login-button"
           onClick={handleSubmit}
+          disabled={loading}
         >
-          Login
+          {loading
+            ? "Logging in..."
+            : "Login"}
         </button>
 
         <button
@@ -130,6 +165,10 @@ function Login() {
             {response.message}
           </div>
         )}
+
+        <div className="login-footer">
+          Secure • Fast • Simple
+        </div>
       </div>
     </div>
   );
