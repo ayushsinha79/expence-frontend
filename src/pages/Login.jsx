@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import API_BASE_URL from "../config";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "./Login.css";
 
 function Login() {
   const [username, setUsername] =
     useState("");
-
-  const [response, setResponse] =
-    useState(null);
 
   const [loading, setLoading] =
     useState(false);
@@ -48,16 +46,14 @@ function Login() {
 
   const handleSubmit = async () => {
     if (!username.trim()) {
-      setResponse({
-        message:
-          "Please enter username",
-      });
+      toast.warning(
+        "Please enter username"
+      );
       return;
     }
-
+  
     setLoading(true);
-    setResponse(null);
-
+  
     try {
       const res = await fetch(
         `${API_BASE_URL}/api/login`,
@@ -72,29 +68,38 @@ function Login() {
           }),
         }
       );
-
+  
       const data = await res.json();
-
-      if (res.ok) {
-        localStorage.setItem(
-          "userId",
-          data.user.id
+  
+      if (!res.ok) {
+        toast.error(
+          data.message ||
+            "Login failed"
         );
-
-        localStorage.setItem(
-          "currentUser",
-          JSON.stringify(data.user)
-        );
-
-        navigate("/dashboard");
-      } else {
-        setResponse(data);
+        return;
       }
+  
+      localStorage.setItem(
+        "userId",
+        data.user._id
+      );
+  
+      localStorage.setItem(
+        "currentUser",
+        JSON.stringify(data.user)
+      );
+  
+      toast.success(
+        "Login successful"
+      );
+  
+      navigate("/dashboard");
     } catch (error) {
-      setResponse({
-        message:
-          "Something went wrong",
-      });
+      console.error(error);
+  
+      toast.error(
+        "Something went wrong"
+      );
     } finally {
       setLoading(false);
     }
@@ -159,12 +164,6 @@ function Login() {
         >
           Create Account
         </button>
-
-        {response && (
-          <div className="login-message">
-            {response.message}
-          </div>
-        )}
 
         <div className="login-footer">
           Secure • Fast • Simple

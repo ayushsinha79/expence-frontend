@@ -48,14 +48,14 @@ function Transaction() {
 
   const availableUsers =
     currentUser?.username?.toLowerCase() ===
-    "ayush"
+      "ayush"
       ? users
       : users.filter(
-          (user) =>
-            user.username.toLowerCase() ===
-              "ayush" ||
-            user._id === currentUser?._id
-        );
+        (user) =>
+          user.username.toLowerCase() ===
+          "ayush" ||
+          user._id === currentUser?._id
+      );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,7 +109,7 @@ function Transaction() {
       } else {
         alert(
           data.message ||
-            "Failed to create transaction"
+          "Failed to create transaction"
         );
       }
     } catch (error) {
@@ -123,6 +123,9 @@ function Transaction() {
 
   return (
     <div className="transaction-page">
+      <div className="background-blur blur-1" />
+      <div className="background-blur blur-2" />
+
       <div className="transaction-card">
         <button
           className="back-btn"
@@ -130,8 +133,12 @@ function Transaction() {
             navigate("/dashboard")
           }
         >
-          ← Back
+          ← Dashboard
         </button>
+
+        <div className="transaction-icon">
+          ₹
+        </div>
 
         <div className="transaction-header">
           <h1 className="transaction-title">
@@ -139,8 +146,8 @@ function Transaction() {
           </h1>
 
           <p className="transaction-subtitle">
-            Record a new expense in
-            your tracker
+            Record expenses and cashback
+            details in your tracker.
           </p>
         </div>
 
@@ -152,14 +159,10 @@ function Transaction() {
           belongsTo={belongsTo}
           availableUsers={availableUsers}
           setTitle={setTitle}
-          setDescription={
-            setDescription
-          }
+          setDescription={setDescription}
           setAmount={setAmount}
           setSource={setSource}
-          setBelongsTo={
-            setBelongsTo
-          }
+          setBelongsTo={setBelongsTo}
           onSubmit={handleSubmit}
         />
       </div>

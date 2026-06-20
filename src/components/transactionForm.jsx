@@ -1,4 +1,11 @@
 import "./transactionForm.css";
+import {
+  FiFileText,
+  FiAlignLeft,
+  FiDollarSign,
+  FiCreditCard,
+  FiUser,
+} from "react-icons/fi";
 
 function TransactionForm({
   title,
@@ -31,8 +38,9 @@ function TransactionForm({
       onSubmit={onSubmit}
     >
       <div className="form-group">
-        <label>
-          Transaction Title
+        <label className="label-with-icon">
+          <FiFileText />
+          <span>Title</span>
         </label>
 
         <input
@@ -48,11 +56,14 @@ function TransactionForm({
       </div>
 
       <div className="form-group">
-        <label>Description</label>
+        <label className="label-with-icon">
+          <FiAlignLeft />
+          <span>Description</span>
+        </label>
 
         <textarea
           className="form-textarea"
-          placeholder="Monthly subscription payment..."
+          placeholder="Monthly subscription payment, grocery purchase, travel expense..."
           value={description}
           onChange={(e) =>
             setDescription(e.target.value)
@@ -63,7 +74,10 @@ function TransactionForm({
 
       <div className="form-row">
         <div className="form-group">
-          <label>Amount (₹)</label>
+          <label className="label-with-icon">
+            <FiDollarSign />
+            <span>Amount (₹)</span>
+          </label>
 
           <input
             className="form-input amount-input"
@@ -78,7 +92,10 @@ function TransactionForm({
         </div>
 
         <div className="form-group">
-          <label>Payment Source</label>
+          <label className="label-with-icon">
+            <FiCreditCard />
+            <span>Payment Source</span>
+          </label>
 
           <select
             className="form-input"
@@ -103,11 +120,18 @@ function TransactionForm({
               )
             )}
           </select>
+
+          <small className="helper-text">
+            Choose the card or payment method
+          </small>
         </div>
       </div>
 
       <div className="form-group">
-        <label>Belongs To</label>
+        <label className="label-with-icon">
+          <FiUser />
+          <span>Belongs To</span>
+        </label>
 
         <select
           className="form-input"

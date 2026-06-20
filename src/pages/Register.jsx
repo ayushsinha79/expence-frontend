@@ -1,18 +1,38 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  FiUser,
+  FiAtSign,
+} from "react-icons/fi";
 import API_BASE_URL from "../config";
 import "./Register.css";
 
 function Register() {
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [username, setUsername] =
-    useState("");
-  const [message, setMessage] =
+  const [name, setName] =
     useState("");
 
+  const [username, setUsername] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
   const handleRegister = async () => {
+    if (
+      !name.trim() ||
+      !username.trim()
+    ) {
+      toast.warning(
+        "Please fill all fields"
+      );
+      return;
+    }
+
+    setLoading(true);
+
     try {
       const res = await fetch(
         `${API_BASE_URL}/user/create`,
@@ -32,28 +52,36 @@ function Register() {
       const data = await res.json();
 
       if (res.ok) {
-        alert(
-          "Account created successfully"
+        toast.success(
+          "Created User"
         );
+
         navigate("/");
       } else {
-        setMessage(
-          data.message ||
-            "Failed to create account"
+        toast.error(
+          "Failed to create account"
         );
       }
     } catch (error) {
       console.error(error);
-      setMessage(
+
+      toast.error(
         "Something went wrong"
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="register-container">
+      <div className="background-blur blur-1" />
+      <div className="background-blur blur-2" />
+
       <div className="register-card">
-        <div className="logo">₹</div>
+        <div className="logo">
+          ₹
+        </div>
 
         <h1 className="register-title">
           Create Account
@@ -64,31 +92,54 @@ function Register() {
           account
         </p>
 
-        <input
-          className="register-input"
-          type="text"
-          placeholder="Full Name"
-          value={name}
-          onChange={(e) =>
-            setName(e.target.value)
-          }
-        />
+        <div className="input-wrapper">
+          <FiUser className="input-icon" />
 
-        <input
-          className="register-input"
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) =>
-            setUsername(e.target.value)
-          }
-        />
+          <input
+            className="register-input"
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) =>
+              setName(
+                e.target.value
+              )
+            }
+            onKeyDown={(e) =>
+              e.key === "Enter" &&
+              handleRegister()
+            }
+          />
+        </div>
+
+        <div className="input-wrapper">
+          <FiAtSign className="input-icon" />
+
+          <input
+            className="register-input"
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) =>
+              setUsername(
+                e.target.value
+              )
+            }
+            onKeyDown={(e) =>
+              e.key === "Enter" &&
+              handleRegister()
+            }
+          />
+        </div>
 
         <button
           className="register-button"
           onClick={handleRegister}
+          disabled={loading}
         >
-          Create Account
+          {loading
+            ? "Creating Account..."
+            : "Create Account"}
         </button>
 
         <button
@@ -100,11 +151,6 @@ function Register() {
           Back to Login
         </button>
 
-        {message && (
-          <div className="message">
-            {message}
-          </div>
-        )}
       </div>
     </div>
   );
