@@ -14,6 +14,13 @@ body {
   margin: 0;
   background: #0f172a;
   overflow-x: hidden;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
 .login-container,
