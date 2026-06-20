@@ -396,9 +396,20 @@
 .date-range-row {
   display: flex;
   gap: 12px;
+  width: 100%;
 }
 
 .date-range-row .date-input-wrapper {
   flex: 1;
+  min-width: 0;
 }
 
+@media (max-width: 768px) {
+  .date-range-row {
+    gap: 12px;
+  }
+
+  .date-range-row .date-input-wrapper {
+    flex: 1;
+  }
+}
