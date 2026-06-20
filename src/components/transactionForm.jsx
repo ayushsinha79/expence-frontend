@@ -15,10 +15,10 @@ function TransactionForm({
   onSubmit,
 }) {
   const paymentSources = [
-    "AXIS Flipkart CC",
-    "HDFC Swiggy CC",
-    "ICICI Amazon CC",
-    "One Card Metal CC",
+    "AXIS Flipkart",
+    "HDFC Swiggy",
+    "ICICI Amazon",
+    "One Card",
     "Kiwi CC",
     "Gpay-HDFC",
     "Gpay-Axis",

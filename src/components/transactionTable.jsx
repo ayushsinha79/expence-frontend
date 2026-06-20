@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { FiCopy } from "react-icons/fi";
+import { FiCopy, FiEye, FiX } from "react-icons/fi";
 import API_BASE_URL from "../config";
 import "./transactionTable.css";
 
 function TransactionTable({
   transactions,
-  setTransactions,
   fetchTransactions,
 }) {
   const [rows, setRows] = useState([]);
+  const [selectedDescription, setSelectedDescription] =
+    useState(null);
 
   useEffect(() => {
-    setRows(transactions);
+    setRows(transactions || []);
   }, [transactions]);
 
   const handleChange = (
@@ -55,14 +56,14 @@ function TransactionTable({
           }),
         }
       );
-  
+
       const data =
         await response.json();
-  
+
       if (!data.success) {
         throw new Error(data.message);
       }
-  
+
       await fetchTransactions();
     } catch (error) {
       console.error(error);
@@ -75,6 +76,13 @@ function TransactionTable({
   const deleteTransaction = async (
     transactionId
   ) => {
+    const confirmDelete =
+      window.confirm(
+        "Delete this transaction?"
+      );
+
+    if (!confirmDelete) return;
+
     try {
       const response = await fetch(
         `${API_BASE_URL}/transaction/delete/${transactionId}`,
@@ -82,14 +90,14 @@ function TransactionTable({
           method: "DELETE",
         }
       );
-  
+
       const data =
         await response.json();
-  
+
       if (!data.success) {
         throw new Error(data.message);
       }
-  
+
       await fetchTransactions();
     } catch (error) {
       console.error(error);
@@ -128,6 +136,89 @@ function TransactionTable({
 
   return (
     <div className="transaction-container">
+      <div className="mobile-transactions">
+        {rows.map((transaction) => (
+          <div
+            key={transaction._id}
+            className="transaction-card-mobile"
+          >
+            <div className="mobile-header">
+              <h3>{transaction.title}</h3>
+
+              <button
+                className="info-btn"
+                onClick={() =>
+                  setSelectedDescription(
+                    transaction.description ||
+                    "No description available"
+                  )
+                }
+              >
+                <FiEye />
+              </button>
+            </div>
+
+            <div className="mobile-item">
+              <span>Source</span>
+              <strong>
+                {transaction.source}
+              </strong>
+            </div>
+
+            <div className="mobile-item">
+              <span>Amount</span>
+              <strong>
+                ₹{transaction.amount}
+              </strong>
+            </div>
+
+            <div className="mobile-item">
+              <span>Cashback</span>
+              <strong>
+                ₹{transaction.cashback}
+              </strong>
+            </div>
+
+            <div className="mobile-item">
+              <span>Created By</span>
+              <strong>
+                {transaction.createdBy
+                  ?.name || "-"}
+              </strong>
+            </div>
+
+            <div className="mobile-actions">
+              <button
+                className="copy-btn"
+                onClick={() =>
+                  copyTransactionId(transaction._id)
+                }
+              >
+                <FiCopy />
+              </button>
+
+              <button
+                className="update-btn"
+                onClick={() =>
+                  updateTransaction(transaction)
+                }
+              >
+                Update
+              </button>
+
+              <button
+                className="delete-btn"
+                onClick={() =>
+                  deleteTransaction(transaction._id)
+                }
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
       <div className="table-container">
         <table className="transaction-table">
           <thead>
@@ -137,9 +228,7 @@ function TransactionTable({
               <th>Source</th>
               <th>Amount</th>
               <th>Cashback</th>
-              <th>Description</th>
               <th>Created By</th>
-              <th>Transaction ID</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -155,19 +244,31 @@ function TransactionTable({
                   </td>
 
                   <td>
-                    <input
-                      className="table-input"
-                      value={
-                        transaction.title
-                      }
-                      onChange={(e) =>
-                        handleChange(
-                          index,
-                          "title",
-                          e.target.value
-                        )
-                      }
-                    />
+                    <div className="title-cell">
+                      <input
+                        className="table-input"
+                        value={transaction.title}
+                        onChange={(e) =>
+                          handleChange(
+                            index,
+                            "title",
+                            e.target.value
+                          )
+                        }
+                      />
+
+                      <button
+                        className="info-btn"
+                        onClick={() =>
+                          setSelectedDescription(
+                            transaction.description ||
+                            "No description available"
+                          )
+                        }
+                      >
+                        <FiEye />
+                      </button>
+                    </div>
                   </td>
 
                   <td>
@@ -221,22 +322,6 @@ function TransactionTable({
                   </td>
 
                   <td>
-                    <input
-                      className="table-input"
-                      value={
-                        transaction.description
-                      }
-                      onChange={(e) =>
-                        handleChange(
-                          index,
-                          "description",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </td>
-
-                  <td>
                     <span className="user-badge">
                       {transaction
                         .createdBy?.name ??
@@ -245,13 +330,7 @@ function TransactionTable({
                   </td>
 
                   <td>
-                    <div className="id-wrapper">
-                      <span className="id-cell">
-                        {
-                          transaction._id
-                        }
-                      </span>
-
+                    <div className="action-buttons">
                       <button
                         className="copy-btn"
                         onClick={() =>
@@ -262,11 +341,7 @@ function TransactionTable({
                       >
                         <FiCopy />
                       </button>
-                    </div>
-                  </td>
 
-                  <td>
-                    <div className="action-buttons">
                       <button
                         className="update-btn"
                         onClick={() =>
@@ -296,6 +371,41 @@ function TransactionTable({
           </tbody>
         </table>
       </div>
+
+      {selectedDescription && (
+        <div
+          className="modal-overlay"
+          onClick={() =>
+            setSelectedDescription(null)
+          }
+        >
+          <div
+            className="description-modal"
+            onClick={(e) =>
+              e.stopPropagation()
+            }
+          >
+            <div className="modal-header">
+              <h3>Description</h3>
+
+              <button
+                className="close-btn"
+                onClick={() =>
+                  setSelectedDescription(
+                    null
+                  )
+                }
+              >
+                <FiX />
+              </button>
+            </div>
+
+            <p>
+              {selectedDescription}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

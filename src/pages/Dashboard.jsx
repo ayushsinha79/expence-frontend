@@ -11,15 +11,18 @@ function Dashboard() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const user = JSON.parse(
-    localStorage.getItem("currentUser") ?? "null"
+  const [user] = useState(() =>
+    JSON.parse(
+      localStorage.getItem("currentUser") ??
+        "null"
+    )
   );
 
   useEffect(() => {
-    if (user) {
+    if (user?._id) {
       fetchTransactions();
     }
-  }, []);
+  }, [user?._id]);
 
   const handleDeleteUser = async () => {
     const confirmed = window.confirm(
@@ -80,10 +83,7 @@ function Dashboard() {
   }
 
   const handleLogout = () => {
-    ["userId", "currentUser"].forEach((key) =>
-      localStorage.removeItem(key)
-    );
-
+    localStorage.clear();
     navigate("/", { replace: true });
   };
 
@@ -129,25 +129,50 @@ function Dashboard() {
       <div className="dashboard-header">
         <div>
           <h1 className="dashboard-title">
-            Expense Dashboard
+            Expense Tracker
           </h1>
 
           <p className="dashboard-subtitle">
-            Manage your transactions
+            Track spending and cashback
           </p>
+        </div>
+
+        <div className="profile-pill">
+          {user.name}
         </div>
       </div>
 
       <div className="dashboard-card">
-        <div className="welcome-card">
-          <p className="welcome-text">
-            Welcome Back
+
+        <div className="hero-card">
+          <p className="hero-label">
+            Net Expense
           </p>
 
-          <h2 className="user-name">
-            {user.name}
-          </h2>
+          <h1 className="hero-amount">
+            ₹
+            {netExpense.toLocaleString(
+              "en-IN"
+            )}
+          </h1>
+
+          <div className="hero-details">
+            <span>
+              Expense ₹
+              {totalExpense.toLocaleString(
+                "en-IN"
+              )}
+            </span>
+
+            <span>
+              Cashback ₹
+              {totalCashback.toLocaleString(
+                "en-IN"
+              )}
+            </span>
+          </div>
         </div>
+
 
         <div className="action-section">
           <button
@@ -275,8 +300,8 @@ function Dashboard() {
                     key={userName}
                     className="user-section"
                   >
-                    {user.username.toLowerCase() ===
-                      "ayush" && (
+                    {(user?.username || "")
+                      .toLowerCase() === "ayush" && (
                         <div className="user-section-header">
                           <h2>
                             {userName}
@@ -308,15 +333,8 @@ function Dashboard() {
                       )}
 
                     <TransactionTable
-                      transactions={
-                        userTransactions
-                      }
-                      setTransactions={
-                        setTransactions
-                      }
-                      fetchTransactions={
-                        fetchTransactions
-                      }
+                      transactions={userTransactions}
+                      fetchTransactions={fetchTransactions}
                     />
                   </div>
                 );
