@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import API_BASE_URL from "../config";
 import "./Dashboard.css";
+import { FiCalendar } from "react-icons/fi"
 
 import TransactionTable from "../components/transactionTable";
 
@@ -10,11 +11,18 @@ function Dashboard() {
 
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sourceFilter, setSourceFilter] = useState("all");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  const fromDateRef = useRef(null);
+  const toDateRef = useRef(null);
 
   const [user] = useState(() =>
     JSON.parse(
       localStorage.getItem("currentUser") ??
-        "null"
+      "null"
     )
   );
 
@@ -104,8 +112,55 @@ function Dashboard() {
   const netExpense =
     totalExpense - totalCashback;
 
+  const sources = [
+    ...new Set(
+      transactions.map(
+        (transaction) =>
+          transaction.source
+      )
+    ),
+  ];
+
+  const filteredTransactions =
+    transactions
+      .filter((transaction) => {
+        const transactionDate =
+          new Date(transaction.date);
+
+        const matchesSource =
+          sourceFilter === "all" ||
+          transaction.source ===
+          sourceFilter;
+
+        const matchesFromDate =
+          !fromDate ||
+          transactionDate >=
+          new Date(fromDate);
+
+        const matchesToDate =
+          !toDate ||
+          transactionDate <=
+          new Date(
+            `${toDate}T23:59:59`
+          );
+
+        return (
+          matchesSource &&
+          matchesFromDate &&
+          matchesToDate
+        );
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+
+        return sortOrder === "desc"
+          ? dateB - dateA
+          : dateA - dateB;
+      });
+
   const groupedTransactions =
-    transactions.reduce(
+    filteredTransactions.reduce(
       (groups, transaction) => {
         const userName =
           transaction.belongsTo?.name ||
@@ -255,94 +310,177 @@ function Dashboard() {
             Loading transactions...
           </div>
         ) : (
-          <div className="table-wrapper">
-            {Object.entries(
-              groupedTransactions
-            ).map(
-              ([
-                userName,
-                userTransactions,
-              ]) => {
-                const userExpense =
-                  userTransactions.reduce(
-                    (
-                      sum,
-                      transaction
-                    ) =>
-                      sum +
-                      Number(
-                        transaction.amount ||
-                        0
-                      ),
-                    0
-                  );
+          <>
+            <div className="filter-bar">
+              <select
+                value={sourceFilter}
+                onChange={(e) =>
+                  setSourceFilter(e.target.value)
+                }
+              >
+                <option value="all">
+                  Filter by Source
+                </option>
 
-                const userCashback =
-                  userTransactions.reduce(
-                    (
-                      sum,
-                      transaction
-                    ) =>
-                      sum +
-                      Number(
-                        transaction.cashback ||
-                        0
-                      ),
-                    0
-                  );
-
-                const userNetExpense =
-                  userExpense -
-                  userCashback;
-
-                return (
-                  <div
-                    key={userName}
-                    className="user-section"
+                {sources.map((source) => (
+                  <option
+                    key={source}
+                    value={source}
                   >
-                    {(user?.username || "")
-                      .toLowerCase() === "ayush" && (
-                        <div className="user-section-header">
-                          <h2>
-                            {userName}
-                          </h2>
+                    {source}
+                  </option>
+                ))}
+              </select>
 
-                          <div className="user-summary">
-                            <span>
-                              Expense: ₹
-                              {userExpense.toLocaleString(
-                                "en-IN"
-                              )}
-                            </span>
+              <div className="date-input-wrapper">
+                <input
+                  ref={fromDateRef}
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) =>
+                    setFromDate(e.target.value)
+                  }
+                  onClick={() =>
+                    fromDateRef.current?.showPicker()
+                  }
+                />
 
-                            <span>
-                              Cashback: ₹
-                              {userCashback.toLocaleString(
-                                "en-IN"
-                              )}
-                            </span>
+                <FiCalendar className="date-icon" />
+              </div>
 
-                            <span>
-                              Net: ₹
-                              {userNetExpense.toLocaleString(
-                                "en-IN"
-                              )}
-                            </span>
+              <div className="date-input-wrapper">
+                <input
+                  ref={toDateRef}
+                  type="date"
+                  value={toDate}
+                  onChange={(e) =>
+                    setToDate(e.target.value)
+                  }
+                  onClick={() =>
+                    toDateRef.current?.showPicker()
+                  }
+                />
+
+                <FiCalendar className="date-icon" />
+              </div>
+
+              <select
+                value={sortOrder}
+                onChange={(e) =>
+                  setSortOrder(e.target.value)
+                }
+              >
+                <option value="desc">
+                  Newest First
+                </option>
+
+                <option value="asc">
+                  Oldest First
+                </option>
+              </select>
+
+              <button
+                className="clear-filter-btn"
+                onClick={() => {
+                  setSourceFilter("all");
+                  setFromDate("");
+                  setToDate("");
+                  setSortOrder("desc");
+                }}
+              >
+                Clear Filters
+              </button>
+            </div>
+            <div className="table-wrapper">
+              {Object.entries(
+                groupedTransactions
+              ).map(
+                ([
+                  userName,
+                  userTransactions,
+                ]) => {
+                  const userExpense =
+                    userTransactions.reduce(
+                      (
+                        sum,
+                        transaction
+                      ) =>
+                        sum +
+                        Number(
+                          transaction.amount ||
+                          0
+                        ),
+                      0
+                    );
+
+                  const userCashback =
+                    userTransactions.reduce(
+                      (
+                        sum,
+                        transaction
+                      ) =>
+                        sum +
+                        Number(
+                          transaction.cashback ||
+                          0
+                        ),
+                      0
+                    );
+
+                  const userNetExpense =
+                    userExpense -
+                    userCashback;
+
+                  return (
+                    <div
+                      key={userName}
+                      className="user-section"
+                    >
+                      {(user?.username || "")
+                        .toLowerCase() === "ayush" && (
+                          <div className="user-section-header">
+                            <h2>
+                              {userName}
+                            </h2>
+
+                            <div className="user-summary">
+                              <span>
+                                Expense: ₹
+                                {userExpense.toLocaleString(
+                                  "en-IN"
+                                )}
+                              </span>
+
+                              <span>
+                                Cashback: ₹
+                                {userCashback.toLocaleString(
+                                  "en-IN"
+                                )}
+                              </span>
+
+                              <span>
+                                Net: ₹
+                                {userNetExpense.toLocaleString(
+                                  "en-IN"
+                                )}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                    <TransactionTable
-                      transactions={userTransactions}
-                      fetchTransactions={fetchTransactions}
-                    />
-                  </div>
-                );
-              }
-            )}
-          </div>
+                      <TransactionTable
+                        transactions={userTransactions}
+                        fetchTransactions={fetchTransactions}
+                      />
+                    </div>
+                  );
+                }
+              )}
+            </div>
+          </>
         )}
       </div>
+
     </div>
   );
 }
