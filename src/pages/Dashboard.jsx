@@ -380,6 +380,9 @@ function Dashboard() {
               </select>
 
               <div className="date-input-wrapper">
+                <label className="filter-label">
+                  From Date
+                </label>
                 <input
                   ref={fromDateRef}
                   type="date"
@@ -396,6 +399,9 @@ function Dashboard() {
               </div>
 
               <div className="date-input-wrapper">
+                <label className="filter-label">
+                  To Date
+                </label>
                 <input
                   ref={toDateRef}
                   type="date"
