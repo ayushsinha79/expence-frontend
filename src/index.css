@@ -4,6 +4,22 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+}
+
 body {
-  font-family: Inter, Arial, sans-serif;
+  margin: 0;
+  background: #0f172a;
+  overflow-x: hidden;
+}
+
+.login-container,
+.register-container,
+.transaction-page,
+.dashboard-container {
+  min-height: 100dvh;
+  box-sizing: border-box;
 }
