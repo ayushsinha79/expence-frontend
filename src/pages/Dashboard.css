@@ -402,6 +402,28 @@
     rgba(239, 68, 68, 0.35);
 }
 
+@media (max-width: 1024px) and (min-width: 769px) {
+  .filter-bar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .filter-bar select,
+  .date-input-wrapper,
+  .clear-filter-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .filter-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
 @media (max-width: 768px) {
   .filter-bar {
     grid-template-columns: 1fr;
