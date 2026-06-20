@@ -5,7 +5,8 @@ import {
   FiDollarSign,
   FiCreditCard,
   FiUser,
-  FiCalendar
+  FiCalendar,
+  FiRepeat
 } from "react-icons/fi";
 
 function TransactionForm({
@@ -23,17 +24,11 @@ function TransactionForm({
   onSubmit,
   date,
   setDate,
+  paymentSources,
+  transactionTitles,
+  transactionType,
+  setTransactionType,
 }) {
-  const paymentSources = [
-    "AXIS Flipkart",
-    "HDFC Swiggy",
-    "ICICI Amazon",
-    "One Card",
-    "Kiwi CC",
-    "Gpay-HDFC",
-    "Gpay-Axis",
-    "Gpay-SBI",
-  ];
 
   return (
     <form
@@ -46,16 +41,29 @@ function TransactionForm({
           <span>Title</span>
         </label>
 
-        <input
+        <select
           className="form-input"
-          type="text"
-          placeholder="Netflix Subscription"
           value={title}
           onChange={(e) =>
             setTitle(e.target.value)
           }
           required
-        />
+        >
+          <option value="">
+            Select Transaction
+          </option>
+
+          {transactionTitles?.map(
+            (item) => (
+              <option
+                key={item}
+                value={item}
+              >
+                {item}
+              </option>
+            )
+          )}
+        </select>
       </div>
 
       <div className="form-group">
@@ -112,13 +120,13 @@ function TransactionForm({
               Select Source
             </option>
 
-            {paymentSources.map(
-              (paymentSource) => (
+            {paymentSources?.map(
+              (source) => (
                 <option
-                  key={paymentSource}
-                  value={paymentSource}
+                  key={source}
+                  value={source}
                 >
-                  {paymentSource}
+                  {source}
                 </option>
               )
             )}
@@ -128,6 +136,39 @@ function TransactionForm({
             Choose the card or payment method
           </small>
         </div>
+      </div>
+
+      <div className="form-group">
+        <label className="label-with-icon">
+          <FiRepeat />
+          <span>Transaction Type</span>
+        </label>
+
+        <select
+          className={`form-input ${transactionType === "CREDIT"
+              ? "credit-select"
+              : "debit-select"
+            }`}
+          value={transactionType}
+          onChange={(e) =>
+            setTransactionType(
+              e.target.value
+            )
+          }
+          required
+        >
+          <option value="DEBIT">
+            Debit
+          </option>
+
+          <option value="CREDIT">
+            Credit
+          </option>
+        </select>
+
+        <small className="helper-text">
+          Debit = Money Spent • Credit = Money Received
+        </small>
       </div>
 
       <div className="form-group">

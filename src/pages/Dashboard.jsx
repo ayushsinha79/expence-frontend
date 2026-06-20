@@ -15,6 +15,8 @@ function Dashboard() {
   const [sortOrder, setSortOrder] = useState("desc");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [titleFilter, setTitleFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
 
   const fromDateRef = useRef(null);
   const toDateRef = useRef(null);
@@ -95,22 +97,55 @@ function Dashboard() {
     navigate("/", { replace: true });
   };
 
-  const totalTransactions = transactions.length;
+  const totalTransactions =
+    transactions.length;
 
-  const totalExpense = transactions.reduce(
-    (sum, transaction) =>
-      sum + Number(transaction.amount || 0),
-    0
-  );
+  const totalCashback =
+    transactions.reduce(
+      (sum, transaction) =>
+        sum +
+        Number(
+          transaction.cashback || 0
+        ),
+      0
+    );
 
-  const totalCashback = transactions.reduce(
-    (sum, transaction) =>
-      sum + Number(transaction.cashback || 0),
-    0
-  );
+  const totalDebit =
+    transactions
+      .filter(
+        (transaction) =>
+          transaction.transactionType ===
+          "DEBIT"
+      )
+      .reduce(
+        (sum, transaction) =>
+          sum +
+          Number(
+            transaction.amount || 0
+          ),
+        0
+      );
 
-  const netExpense =
-    totalExpense - totalCashback;
+  const totalCredit =
+    transactions
+      .filter(
+        (transaction) =>
+          transaction.transactionType ===
+          "CREDIT"
+      )
+      .reduce(
+        (sum, transaction) =>
+          sum +
+          Number(
+            transaction.amount || 0
+          ),
+        0
+      );
+
+  const netBalance =
+    totalCredit -
+    totalDebit +
+    totalCashback;
 
   const sources = [
     ...new Set(
@@ -121,16 +156,37 @@ function Dashboard() {
     ),
   ];
 
+  const titles = [
+    ...new Set(
+      transactions.map(
+        (transaction) =>
+          transaction.title
+      )
+    ),
+  ];
+
   const filteredTransactions =
     transactions
       .filter((transaction) => {
         const transactionDate =
-          new Date(transaction.date);
+          new Date(
+            transaction.date
+          );
 
         const matchesSource =
           sourceFilter === "all" ||
           transaction.source ===
           sourceFilter;
+
+        const matchesTitle =
+          titleFilter === "all" ||
+          transaction.title ===
+          titleFilter;
+
+        const matchesType =
+          typeFilter === "all" ||
+          transaction.transactionType ===
+          typeFilter;
 
         const matchesFromDate =
           !fromDate ||
@@ -146,13 +202,20 @@ function Dashboard() {
 
         return (
           matchesSource &&
+          matchesTitle &&
           matchesFromDate &&
-          matchesToDate
+          matchesToDate &&
+          matchesType
         );
       })
       .sort((a, b) => {
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
+        const dateA = new Date(
+          a.date
+        );
+
+        const dateB = new Date(
+          b.date
+        );
 
         return sortOrder === "desc"
           ? dateB - dateA
@@ -201,31 +264,15 @@ function Dashboard() {
 
         <div className="hero-card">
           <p className="hero-label">
-            Net Expense
+            Net Balance
           </p>
 
           <h1 className="hero-amount">
             ₹
-            {netExpense.toLocaleString(
+            {netBalance.toLocaleString(
               "en-IN"
             )}
           </h1>
-
-          <div className="hero-details">
-            <span>
-              Expense ₹
-              {totalExpense.toLocaleString(
-                "en-IN"
-              )}
-            </span>
-
-            <span>
-              Cashback ₹
-              {totalCashback.toLocaleString(
-                "en-IN"
-              )}
-            </span>
-          </div>
         </div>
 
 
@@ -267,12 +314,25 @@ function Dashboard() {
 
           <div className="stat-card">
             <p className="stat-title">
-              Total Expense
+              Total Debit
             </p>
 
             <h3 className="stat-value">
               ₹
-              {totalExpense.toLocaleString(
+              {totalDebit.toLocaleString(
+                "en-IN"
+              )}
+            </h3>
+          </div>
+
+          <div className="stat-card">
+            <p className="stat-title">
+              Total Credit
+            </p>
+
+            <h3 className="stat-value">
+              ₹
+              {totalCredit.toLocaleString(
                 "en-IN"
               )}
             </h3>
@@ -286,19 +346,6 @@ function Dashboard() {
             <h3 className="stat-value">
               ₹
               {totalCashback.toLocaleString(
-                "en-IN"
-              )}
-            </h3>
-          </div>
-
-          <div className="stat-card">
-            <p className="stat-title">
-              Net Expense
-            </p>
-
-            <h3 className="stat-value">
-              ₹
-              {netExpense.toLocaleString(
                 "en-IN"
               )}
             </h3>
@@ -379,6 +426,49 @@ function Dashboard() {
                 </option>
               </select>
 
+              <select
+                value={titleFilter}
+                onChange={(e) =>
+                  setTitleFilter(
+                    e.target.value
+                  )
+                }
+              >
+                <option value="all">
+                  Filter by Title
+                </option>
+
+                {titles.map((title) => (
+                  <option
+                    key={title}
+                    value={title}
+                  >
+                    {title}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={typeFilter}
+                onChange={(e) =>
+                  setTypeFilter(
+                    e.target.value
+                  )
+                }
+              >
+                <option value="all">
+                  All Types
+                </option>
+
+                <option value="DEBIT">
+                  Debit
+                </option>
+
+                <option value="CREDIT">
+                  Credit
+                </option>
+              </select>
+
               <button
                 className="clear-filter-btn"
                 onClick={() => {
@@ -386,6 +476,8 @@ function Dashboard() {
                   setFromDate("");
                   setToDate("");
                   setSortOrder("desc");
+                  setTitleFilter("all");
+                  setTypeFilter("all");
                 }}
               >
                 Clear Filters
@@ -399,36 +491,51 @@ function Dashboard() {
                   userName,
                   userTransactions,
                 ]) => {
-                  const userExpense =
-                    userTransactions.reduce(
-                      (
-                        sum,
-                        transaction
-                      ) =>
-                        sum +
-                        Number(
-                          transaction.amount ||
-                          0
-                        ),
-                      0
-                    );
+                  const userDebit =
+                    userTransactions
+                      .filter(
+                        (transaction) =>
+                          transaction.transactionType ===
+                          "DEBIT"
+                      )
+                      .reduce(
+                        (sum, transaction) =>
+                          sum +
+                          Number(
+                            transaction.amount || 0
+                          ),
+                        0
+                      );
+
+                  const userCredit =
+                    userTransactions
+                      .filter(
+                        (transaction) =>
+                          transaction.transactionType ===
+                          "CREDIT"
+                      )
+                      .reduce(
+                        (sum, transaction) =>
+                          sum +
+                          Number(
+                            transaction.amount || 0
+                          ),
+                        0
+                      );
 
                   const userCashback =
                     userTransactions.reduce(
-                      (
-                        sum,
-                        transaction
-                      ) =>
+                      (sum, transaction) =>
                         sum +
                         Number(
-                          transaction.cashback ||
-                          0
+                          transaction.cashback || 0
                         ),
                       0
                     );
 
-                  const userNetExpense =
-                    userExpense -
+                  const userNetBalance =
+                    userCredit -
+                    userDebit +
                     userCashback;
 
                   return (
@@ -445,8 +552,15 @@ function Dashboard() {
 
                             <div className="user-summary">
                               <span>
-                                Expense: ₹
-                                {userExpense.toLocaleString(
+                                Debit: ₹
+                                {userDebit.toLocaleString(
+                                  "en-IN"
+                                )}
+                              </span>
+
+                              <span>
+                                Credit: ₹
+                                {userCredit.toLocaleString(
                                   "en-IN"
                                 )}
                               </span>
@@ -459,8 +573,8 @@ function Dashboard() {
                               </span>
 
                               <span>
-                                Net: ₹
-                                {userNetExpense.toLocaleString(
+                                Balance: ₹
+                                {userNetBalance.toLocaleString(
                                   "en-IN"
                                 )}
                               </span>

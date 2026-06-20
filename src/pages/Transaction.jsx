@@ -15,20 +15,17 @@ function Transaction() {
   );
 
   const [title, setTitle] = useState("");
-  const [description, setDescription] =
-    useState("");
-  const [amount, setAmount] =
-    useState("");
-  const [source, setSource] =
-    useState("");
-
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState("");
+  const [source, setSource] = useState("");
   const [users, setUsers] = useState([]);
-
-  const [belongsTo, setBelongsTo] =
-    useState("");
+  const [belongsTo, setBelongsTo] = useState("");
+  const [config, setConfig] = useState({paymentSources: [],transactionTitles: [],});
+  const [transactionType,setTransactionType,] = useState("DEBIT");
 
   useEffect(() => {
     fetchUsers();
+    fetchConfig();
   }, []);
 
   const fetchUsers = async () => {
@@ -44,6 +41,25 @@ function Transaction() {
     } catch (error) {
       console.error(
         "Failed to fetch users:",
+        error
+      );
+    }
+  };
+  const fetchConfig = async () => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/config/get`
+      );
+  
+      const data =
+        await response.json();
+  
+      if (data.success) {
+        setConfig(data.data);
+      }
+    } catch (error) {
+      console.error(
+        "Failed to fetch config:",
         error
       );
     }
@@ -89,6 +105,7 @@ function Transaction() {
             description,
             amount: Number(amount),
             source,
+            transactionType,
             createdBy:
               currentUser._id,
             belongsTo,
@@ -108,6 +125,7 @@ function Transaction() {
         setAmount("");
         setSource("");
         setBelongsTo("");
+        setTransactionType("DEBIT");
 
         navigate("/dashboard");
       } else {
@@ -170,6 +188,10 @@ function Transaction() {
           onSubmit={handleSubmit}
           date={date}
           setDate={setDate}
+          paymentSources={config.paymentSources}
+          transactionTitles={config.transactionTitles}
+          transactionType={transactionType}
+          setTransactionType={setTransactionType}
         />
       </div>
     </div>

@@ -121,3 +121,11 @@
   color: #818cf8;
   flex-shrink: 0;
 }
+
+.credit-select {
+  border-left: 4px solid #22c55e;
+}
+
+.debit-select {
+  border-left: 4px solid #ef4444;
+}
