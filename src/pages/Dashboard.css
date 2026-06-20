@@ -393,4 +393,12 @@
   }
 }
 
+.date-range-row {
+  display: flex;
+  gap: 12px;
+}
+
+.date-range-row .date-input-wrapper {
+  flex: 1;
+}
 

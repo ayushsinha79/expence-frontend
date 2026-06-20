@@ -379,42 +379,45 @@ function Dashboard() {
                 ))}
               </select>
 
-              <div className="date-input-wrapper">
-                <label className="filter-label">
-                  From Date
-                </label>
-                <input
-                  ref={fromDateRef}
-                  type="date"
-                  value={fromDate}
-                  onChange={(e) =>
-                    setFromDate(e.target.value)
-                  }
-                  onClick={() =>
-                    fromDateRef.current?.showPicker()
-                  }
-                />
+              <div className="date-range-row">
 
-                <FiCalendar className="date-icon" />
-              </div>
+                <div className="date-input-wrapper">
+                  <label className="filter-label">
+                    From Date
+                  </label>
+                  <input
+                    ref={fromDateRef}
+                    type="date"
+                    value={fromDate}
+                    onChange={(e) =>
+                      setFromDate(e.target.value)
+                    }
+                    onClick={() =>
+                      fromDateRef.current?.showPicker()
+                    }
+                  />
 
-              <div className="date-input-wrapper">
-                <label className="filter-label">
-                  To Date
-                </label>
-                <input
-                  ref={toDateRef}
-                  type="date"
-                  value={toDate}
-                  onChange={(e) =>
-                    setToDate(e.target.value)
-                  }
-                  onClick={() =>
-                    toDateRef.current?.showPicker()
-                  }
-                />
+                  <FiCalendar className="date-icon" />
+                </div>
 
-                <FiCalendar className="date-icon" />
+                <div className="date-input-wrapper">
+                  <label className="filter-label">
+                    To Date
+                  </label>
+                  <input
+                    ref={toDateRef}
+                    type="date"
+                    value={toDate}
+                    onChange={(e) =>
+                      setToDate(e.target.value)
+                    }
+                    onClick={() =>
+                      toDateRef.current?.showPicker()
+                    }
+                  />
+
+                  <FiCalendar className="date-icon" />
+                </div>
               </div>
 
               <select
