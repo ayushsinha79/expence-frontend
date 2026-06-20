@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TransactionForm from "../components/transactionForm";
 import API_BASE_URL from "../config";
@@ -6,6 +6,10 @@ import "./Transaction.css";
 
 function Transaction() {
   const navigate = useNavigate();
+
+  const currentUser = JSON.parse(
+    localStorage.getItem("currentUser")
+  );
 
   const [title, setTitle] = useState("");
   const [description, setDescription] =
@@ -15,17 +19,56 @@ function Transaction() {
   const [source, setSource] =
     useState("");
 
+  const [users, setUsers] = useState([]);
+
+  const [belongsTo, setBelongsTo] =
+    useState("");
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/user/get`
+      );
+
+      const data =
+        await response.json();
+
+      setUsers(data.data || []);
+    } catch (error) {
+      console.error(
+        "Failed to fetch users:",
+        error
+      );
+    }
+  };
+
+  const availableUsers =
+    currentUser?.username?.toLowerCase() ===
+    "ayush"
+      ? users
+      : users.filter(
+          (user) =>
+            user.username.toLowerCase() ===
+              "ayush" ||
+            user._id === currentUser?._id
+        );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const currentUser = JSON.parse(
-      localStorage.getItem(
-        "currentUser"
-      )
-    );
-
     if (!currentUser) {
       alert("Please login first");
+      return;
+    }
+
+    if (!belongsTo) {
+      alert(
+        "Please select who the transaction belongs to"
+      );
       return;
     }
 
@@ -45,8 +88,7 @@ function Transaction() {
             source,
             createdBy:
               currentUser._id,
-            belongsTo:
-              currentUser._id,
+            belongsTo,
           }),
         }
       );
@@ -61,13 +103,18 @@ function Transaction() {
         setDescription("");
         setAmount("");
         setSource("");
+        setBelongsTo("");
 
         navigate("/dashboard");
       } else {
-        alert(data.message);
+        alert(
+          data.message ||
+            "Failed to create transaction"
+        );
       }
     } catch (error) {
       console.error(error);
+
       alert(
         "Something went wrong"
       );
@@ -102,12 +149,17 @@ function Transaction() {
           description={description}
           amount={amount}
           source={source}
+          belongsTo={belongsTo}
+          availableUsers={availableUsers}
           setTitle={setTitle}
           setDescription={
             setDescription
           }
           setAmount={setAmount}
           setSource={setSource}
+          setBelongsTo={
+            setBelongsTo
+          }
           onSubmit={handleSubmit}
         />
       </div>

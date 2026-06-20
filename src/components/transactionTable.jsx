@@ -139,7 +139,6 @@ function TransactionTable({
               <th>Cashback</th>
               <th>Description</th>
               <th>Created By</th>
-              <th>Belongs To</th>
               <th>Transaction ID</th>
               <th>Actions</th>
             </tr>
@@ -241,14 +240,6 @@ function TransactionTable({
                     <span className="user-badge">
                       {transaction
                         .createdBy?.name ??
-                        "-"}
-                    </span>
-                  </td>
-
-                  <td>
-                    <span className="user-badge">
-                      {transaction
-                        .belongsTo?.name ??
                         "-"}
                     </span>
                   </td>

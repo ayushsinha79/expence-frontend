@@ -202,3 +202,31 @@
       min-width: 1200px;
     }
   }
+
+  @media (max-width: 768px) {
+    .table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  
+    .transaction-table {
+      min-width: 900px;
+    }
+  
+    .table-input {
+      min-width: 100px;
+    }
+  
+    .action-buttons {
+      flex-direction: column;
+    }
+  
+    .update-btn,
+    .delete-btn {
+      width: 100%;
+    }
+  
+    .id-cell {
+      max-width: 120px;
+    }
+  }

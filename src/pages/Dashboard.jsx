@@ -21,7 +21,6 @@ function Dashboard() {
     }
   }, []);
 
-
   const handleDeleteUser = async () => {
     const confirmed = window.confirm(
       "Are you sure you want to delete your account? This will permanently delete all your transactions."
@@ -102,7 +101,28 @@ function Dashboard() {
     0
   );
 
-  const netExpense = totalExpense - totalCashback;
+  const netExpense =
+    totalExpense - totalCashback;
+
+  const groupedTransactions =
+    transactions.reduce(
+      (groups, transaction) => {
+        const userName =
+          transaction.belongsTo?.name ||
+          "Unknown";
+
+        if (!groups[userName]) {
+          groups[userName] = [];
+        }
+
+        groups[userName].push(
+          transaction
+        );
+
+        return groups;
+      },
+      {}
+    );
 
   return (
     <div className="dashboard-container">
@@ -145,6 +165,7 @@ function Dashboard() {
           >
             Logout
           </button>
+
           <button
             className="delete-account-btn"
             onClick={handleDeleteUser}
@@ -170,7 +191,8 @@ function Dashboard() {
             </p>
 
             <h3 className="stat-value">
-              ₹{totalExpense.toLocaleString(
+              ₹
+              {totalExpense.toLocaleString(
                 "en-IN"
               )}
             </h3>
@@ -182,7 +204,8 @@ function Dashboard() {
             </p>
 
             <h3 className="stat-value">
-              ₹{totalCashback.toLocaleString(
+              ₹
+              {totalCashback.toLocaleString(
                 "en-IN"
               )}
             </h3>
@@ -194,7 +217,8 @@ function Dashboard() {
             </p>
 
             <h3 className="stat-value">
-              ₹{netExpense.toLocaleString(
+              ₹
+              {netExpense.toLocaleString(
                 "en-IN"
               )}
             </h3>
@@ -207,11 +231,97 @@ function Dashboard() {
           </div>
         ) : (
           <div className="table-wrapper">
-            <TransactionTable
-              transactions={transactions}
-              setTransactions={setTransactions}
-              fetchTransactions={fetchTransactions}
-            />
+            {Object.entries(
+              groupedTransactions
+            ).map(
+              ([
+                userName,
+                userTransactions,
+              ]) => {
+                const userExpense =
+                  userTransactions.reduce(
+                    (
+                      sum,
+                      transaction
+                    ) =>
+                      sum +
+                      Number(
+                        transaction.amount ||
+                        0
+                      ),
+                    0
+                  );
+
+                const userCashback =
+                  userTransactions.reduce(
+                    (
+                      sum,
+                      transaction
+                    ) =>
+                      sum +
+                      Number(
+                        transaction.cashback ||
+                        0
+                      ),
+                    0
+                  );
+
+                const userNetExpense =
+                  userExpense -
+                  userCashback;
+
+                return (
+                  <div
+                    key={userName}
+                    className="user-section"
+                  >
+                    {user.username.toLowerCase() ===
+                      "ayush" && (
+                        <div className="user-section-header">
+                          <h2>
+                            {userName}
+                          </h2>
+
+                          <div className="user-summary">
+                            <span>
+                              Expense: ₹
+                              {userExpense.toLocaleString(
+                                "en-IN"
+                              )}
+                            </span>
+
+                            <span>
+                              Cashback: ₹
+                              {userCashback.toLocaleString(
+                                "en-IN"
+                              )}
+                            </span>
+
+                            <span>
+                              Net: ₹
+                              {userNetExpense.toLocaleString(
+                                "en-IN"
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                    <TransactionTable
+                      transactions={
+                        userTransactions
+                      }
+                      setTransactions={
+                        setTransactions
+                      }
+                      fetchTransactions={
+                        fetchTransactions
+                      }
+                    />
+                  </div>
+                );
+              }
+            )}
           </div>
         )}
       </div>

@@ -5,10 +5,13 @@ function TransactionForm({
   description,
   amount,
   source,
+  belongsTo,
+  availableUsers,
   setTitle,
   setDescription,
   setAmount,
   setSource,
+  setBelongsTo,
   onSubmit,
 }) {
   const paymentSources = [
@@ -101,6 +104,34 @@ function TransactionForm({
             )}
           </select>
         </div>
+      </div>
+
+      <div className="form-group">
+        <label>Belongs To</label>
+
+        <select
+          className="form-input"
+          value={belongsTo}
+          onChange={(e) =>
+            setBelongsTo(e.target.value)
+          }
+          required
+        >
+          <option value="">
+            Select User
+          </option>
+
+          {availableUsers?.map(
+            (user) => (
+              <option
+                key={user._id}
+                value={user._id}
+              >
+                {user.name}
+              </option>
+            )
+          )}
+        </select>
       </div>
 
       <button
