@@ -111,7 +111,7 @@ function Login() {
         </div>
 
         <h1 className="login-title">
-          Expense Tracker
+          Bryant Tracker
         </h1>
 
         <p className="login-subtitle">

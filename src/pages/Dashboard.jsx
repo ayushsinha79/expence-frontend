@@ -129,7 +129,7 @@ function Dashboard() {
       <div className="dashboard-header">
         <div>
           <h1 className="dashboard-title">
-            Expense Tracker
+            Bryant Tracker
           </h1>
 
           <p className="dashboard-subtitle">
