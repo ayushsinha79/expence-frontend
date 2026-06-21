@@ -53,6 +53,8 @@ function TransactionTable({
             ),
             description:
               transaction.description,
+            transactionType:
+              transaction.transactionType,
           }),
         }
       );
@@ -144,7 +146,20 @@ function TransactionTable({
           >
             <div className="mobile-header">
               <div>
-                <h3>{transaction.title}</h3>
+                <div className="title-row">
+                  <h3>{transaction.title}</h3>
+
+                  <span
+                    className={`type-badge ${transaction.transactionType ===
+                        "CREDIT"
+                        ? "credit"
+                        : "debit"
+                      }`}
+                  >
+                    {transaction.transactionType ||
+                      "DEBIT"}
+                  </span>
+                </div>
 
                 <small className="transaction-date">
                   {new Date(
@@ -241,6 +256,7 @@ function TransactionTable({
               <th>No.</th>
               <th>Title</th>
               <th>Source</th>
+              <th>Type</th>
               <th>Amount</th>
               <th>Cashback</th>
               <th>Date</th>
@@ -301,6 +317,31 @@ function TransactionTable({
                         )
                       }
                     />
+                  </td>
+
+                  <td>
+                    <select
+                      className="table-input"
+                      value={
+                        transaction.transactionType ||
+                        "DEBIT"
+                      }
+                      onChange={(e) =>
+                        handleChange(
+                          index,
+                          "transactionType",
+                          e.target.value
+                        )
+                      }
+                    >
+                      <option value="DEBIT">
+                        Debit
+                      </option>
+
+                      <option value="CREDIT">
+                        Credit
+                      </option>
+                    </select>
                   </td>
 
                   <td>

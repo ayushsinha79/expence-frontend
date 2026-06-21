@@ -374,3 +374,40 @@
   flex: 1;
   height: auto;
 }
+
+.type-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.type-badge.credit,
+.credit-type {
+  color: #22c55e;
+  background: rgba(
+    34,
+    197,
+    94,
+    0.15
+  );
+}
+
+.type-badge.debit,
+.debit-type {
+  color: #ef4444;
+  background: rgba(
+    239,
+    68,
+    68,
+    0.15
+  );
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 2px;
+  flex-wrap: wrap;
+}

@@ -368,6 +368,7 @@
 .clear-filter-btn {
   width: 100%;
   padding: 12px 18px;
+  margin-bottom: 20px;
   border: none;
   border-radius: 12px;
   background: linear-gradient(
